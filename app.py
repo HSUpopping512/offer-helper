@@ -183,40 +183,23 @@ with col1:
         st.session_state.company_count += 1
         st.session_state.company_names.append(f"新公司 {st.session_state.company_count}")
 
-    # 3. 根據目前的數量，動態產生對應數量的輸入框（包含刪除按鈕）
+    # 3. 根據目前的數量，動態產生對應數量的輸入框
     updated_companies = []
-    comp_to_delete = None
     
     for i in range(st.session_state.company_count):
         # 確保名稱陣列長度足夠
         if i >= len(st.session_state.company_names):
             st.session_state.company_names.append(f"新公司 {i+1}")
             
-        c_input, c_del = st.columns([5, 1])
-        with c_input:
-            comp_name = st.text_input(
-                f"第 {i+1} 間公司名稱", 
-                value=st.session_state.company_names[i], 
-                key=f"comp_input_{i}" # 每個輸入框必須有獨立的 key
-            )
-            updated_companies.append(comp_name)
-        with c_del:
-            # 用於與輸入框對齊的空白高度
-            st.markdown("<div style='padding-top: 28px;'></div>", unsafe_allow_html=True)
-            if st.button("🗑️", key=f"del_comp_{i}", help=f"刪除 {st.session_state.company_names[i]}", use_container_width=True):
-                comp_to_delete = i
+        comp_name = st.text_input(
+            f"第 {i+1} 間公司名稱", 
+            value=st.session_state.company_names[i], 
+            key=f"comp_input_{i}" # 每個輸入框必須有獨立的 key
+        )
+        updated_companies.append(comp_name)
                 
     # 將使用者修改後的名字存回 Session State
     st.session_state.company_names = updated_companies
-    
-    # 處理刪除邏輯
-    if comp_to_delete is not None:
-        if st.session_state.company_count > 1:
-            st.session_state.company_names.pop(comp_to_delete)
-            st.session_state.company_count -= 1
-            st.rerun()
-        else:
-            st.warning("⚠️ 至少需要保留一間公司！")
             
     # 4. 新增按鈕
     st.button("➕ 新增一間公司", on_click=add_company, use_container_width=True)
@@ -364,8 +347,7 @@ with col2:
         </div>
         """, unsafe_allow_html=True)
         
-        if is_tie_or_narrow:
-            st.balloons()
+        # Removed balloon effect to keep the interface clean and professional
             
         # Display summary dataframe
         st.subheader("📋 加權分數總表")
